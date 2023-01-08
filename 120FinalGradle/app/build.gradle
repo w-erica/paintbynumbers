@@ -27,10 +27,20 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'FinalGradle.App'
+    mainClass = 'edu.upenn.cis120.finalprj.Game'
 }
 
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+jar {
+    baseName = 'PBN'
+    from('src/main/') {
+        include 'resources/*.png'
+    }
+    manifest {
+        attributes 'Main-Class': 'edu.upenn.cis120.finalprj.Game'
+    }
 }
