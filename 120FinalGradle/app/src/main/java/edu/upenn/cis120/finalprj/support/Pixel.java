@@ -8,30 +8,16 @@ import java.awt.Color; // explicitly imported because IntelliJ complained if I d
  * Class that represents a single pixel. Extends JComponent.
  */
 public class Pixel extends JComponent {
-    // instance variables
+    // instance variables -- backend stuff (but necessary to determine how it looks in frontend)
     private boolean isColored;
     private boolean isHighlighted;
     private int colorTag;
-    private Color color;
-
-    // class variables
-    public static final int SIDELENGTH; // current side length in pixels.
-    private static final Font FONT;
-    private static final Color highlight;
-
-    // initialize pixel size, number size, and the color for highlighting
-    static {
-        SIDELENGTH = 16;
-        FONT = new Font("Dialog", 1, SIDELENGTH * 3 / 4);
-        highlight = new Color(235, 64, 52);
-    }
 
     // Constructor
     public Pixel(int colorTag, Color color) {
         isColored = false;
         isHighlighted = false;
         this.colorTag = colorTag;
-        this.color = color;
     }
 
     // Getters
@@ -45,10 +31,6 @@ public class Pixel extends JComponent {
 
     public int getColorTag() {
         return colorTag;
-    }
-
-    public Color getColor() {
-        return color;
     }
 
     // returns whether its color was actually changed or not
@@ -69,29 +51,5 @@ public class Pixel extends JComponent {
      */
     public void toggleHighlight() {
         isHighlighted = !isHighlighted;
-    }
-
-    // JComponent things
-    @Override
-    public void paintComponent(Graphics g) {
-        if (isColored) {
-            g.setColor(color);
-            g.fillRect(0, 0, SIDELENGTH, SIDELENGTH);
-        } else {
-            g.setColor(Color.black);
-            g.drawRect(0, 0, SIDELENGTH, SIDELENGTH);
-            g.setFont(FONT);
-            g.drawString(Integer.toString(colorTag), 1, SIDELENGTH - 1);
-        }
-        if (isHighlighted) {
-            g.drawRect(1, 1, SIDELENGTH - 1, SIDELENGTH - 1);
-            g.setColor(highlight);
-            g.drawRect(0, 0, SIDELENGTH, SIDELENGTH);
-        }
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(SIDELENGTH, SIDELENGTH);
     }
 }

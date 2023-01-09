@@ -2,6 +2,7 @@ package edu.upenn.cis120.finalprj;
 
 import edu.upenn.cis120.finalprj.support.PBNModel;
 import edu.upenn.cis120.finalprj.support.Pixel;
+import edu.upenn.cis120.finalprj.support.PixelComponent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,8 +18,15 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static javax.imageio.ImageIO.read;
 import static javax.swing.JOptionPane.*;
+
+/**
+ * todo:
+ * - add support for absolute path custom pictures (change reset to take in a stream, change where u reset)
+ * - refactor pixel class to mvc
+ */
+
+// note that RunPBN is basically the frontend
 
 public class RunPBN implements Runnable{
     // game model stuff
@@ -99,7 +107,9 @@ public class RunPBN implements Runnable{
         newCanvas.setLayout(new GridLayout(numRows, numCols));
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
-                newCanvas.add(pbnModel.getPixel(i, j));
+                newCanvas.add(pbnModel.getPixel(i, j)); // must change so that this calls the frontend model
+                // alternatively:
+                    // keep a separate jcomponent pixel array just like the other pixel array, just separate...?
             }
         }
 
@@ -116,7 +126,7 @@ public class RunPBN implements Runnable{
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    done = pbnModel.color(e.getY()/ Pixel.SIDELENGTH, e.getX()/Pixel.SIDELENGTH);
+                    done = pbnModel.color(e.getY()/ PixelComponent.SIDELENGTH, e.getX()/ PixelComponent.SIDELENGTH);
                     canvas.repaint();
                     if (done) {
                         showMessageDialog(frame, "You did it! You can continue with \n" +
@@ -135,7 +145,7 @@ public class RunPBN implements Runnable{
         return true;
     }
 
-    // resolve filepath
+    // resolve filepath (NO LONGER USED!!)
     private File getFile(String pathname) throws URISyntaxException {
         File filepath = null;
         try {

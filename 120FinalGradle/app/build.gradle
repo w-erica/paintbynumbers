@@ -37,9 +37,6 @@ tasks.named('test') {
 
 jar {
     baseName = 'PBN'
-    from('src/main/') {
-        include 'resources/*.png'
-    }
     manifest {
         attributes 'Main-Class': 'edu.upenn.cis120.finalprj.Game'
     }
