@@ -14,18 +14,6 @@ public class Pixel extends JComponent {
     private int colorTag;
     private Color color;
 
-    // class variables
-    public static final int SIDELENGTH; // current side length in pixels.
-    private static final Font FONT;
-    private static final Color highlight;
-
-    // initialize pixel size, number size, and the color for highlighting
-    static {
-        SIDELENGTH = 16;
-        FONT = new Font("Dialog", 1, SIDELENGTH * 3 / 4);
-        highlight = new Color(235, 64, 52);
-    }
-
     // Constructor
     public Pixel(int colorTag, Color color) {
         isColored = false;
@@ -69,29 +57,5 @@ public class Pixel extends JComponent {
      */
     public void toggleHighlight() {
         isHighlighted = !isHighlighted;
-    }
-
-    // JComponent things
-    @Override
-    public void paintComponent(Graphics g) {
-        if (isColored) {
-            g.setColor(color);
-            g.fillRect(0, 0, SIDELENGTH, SIDELENGTH);
-        } else {
-            g.setColor(Color.black);
-            g.drawRect(0, 0, SIDELENGTH, SIDELENGTH);
-            g.setFont(FONT);
-            g.drawString(Integer.toString(colorTag), 1, SIDELENGTH - 1);
-        }
-        if (isHighlighted) {
-            g.drawRect(1, 1, SIDELENGTH - 1, SIDELENGTH - 1);
-            g.setColor(highlight);
-            g.drawRect(0, 0, SIDELENGTH, SIDELENGTH);
-        }
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(SIDELENGTH, SIDELENGTH);
     }
 }

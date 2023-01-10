@@ -2,6 +2,7 @@ package edu.upenn.cis120.finalprj;
 
 import edu.upenn.cis120.finalprj.support.PBNModel;
 import edu.upenn.cis120.finalprj.support.Pixel;
+import edu.upenn.cis120.finalprj.support.PixelComponent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -68,22 +69,22 @@ public class RunPBN implements Runnable{
         frame.add(sidebar, BorderLayout.EAST);
         // initialize the colorPicker
         colorPicker = new JSpinner();
-        reset(defaultImage);
+        BufferedImage bufferedImage = null;
+        try {
+            InputStream in = getClass().getResourceAsStream("/".concat(defaultImage));
+            bufferedImage = ImageIO.read(in);
+        } catch (IOException | NullPointerException | IllegalArgumentException e) {
+            System.out.println(defaultImage);
+            e.printStackTrace();
+            // throw an error
+        }
+        reset(bufferedImage); // file path for preset
     }
 
     // method for resetting the game image - this is where the I/O happens.
     // return true or false based on success
     // also will change your canvas for you and your framesize and everything
-    public boolean reset(String pathname) {
-        BufferedImage bufferedImage;
-        try {
-            InputStream in = getClass().getResourceAsStream("/".concat(pathname));
-            bufferedImage = ImageIO.read(in);
-        } catch (IOException | NullPointerException | IllegalArgumentException e) {
-            System.out.println(pathname);
-            e.printStackTrace();
-            return false;
-        }
+    public boolean reset(BufferedImage bufferedImage) {
         pbnModel =  new PBNModel(bufferedImage);
         numRows = pbnModel.getNumRows();
         numCols = pbnModel.getNumCols();
@@ -99,7 +100,7 @@ public class RunPBN implements Runnable{
         newCanvas.setLayout(new GridLayout(numRows, numCols));
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
-                newCanvas.add(pbnModel.getPixel(i, j));
+                newCanvas.add(new PixelComponent(i, j, pbnModel));
             }
         }
 
@@ -116,7 +117,7 @@ public class RunPBN implements Runnable{
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    done = pbnModel.color(e.getY()/ Pixel.SIDELENGTH, e.getX()/Pixel.SIDELENGTH);
+                    done = pbnModel.color(e.getY()/ PixelComponent.SIDELENGTH, e.getX()/PixelComponent.SIDELENGTH);
                     canvas.repaint();
                     if (done) {
                         showMessageDialog(frame, "You did it! You can continue with \n" +
@@ -161,7 +162,17 @@ public class RunPBN implements Runnable{
             temp.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    reset(defaultOptions[finalI][1]); // file path for preset
+                    String pathname = defaultOptions[finalI][1];
+                    BufferedImage bufferedImage = null;
+                    try {
+                        InputStream in = getClass().getResourceAsStream("/".concat(pathname));
+                        bufferedImage = ImageIO.read(in);
+                    } catch (IOException | NullPointerException | IllegalArgumentException exc) {
+                        System.out.println(pathname);
+                        exc.printStackTrace();
+                        // throw an error of some sort
+                    }
+                    reset(bufferedImage); // file path for preset
                     choices.setVisible(false);
                 }
             });
@@ -185,7 +196,17 @@ public class RunPBN implements Runnable{
                 String newFile = showInputDialog("Type your path to your new file \n" +
                         "It should be an absolute path. \n" +
                         "Also don't make the picture really big. Don't say I didn't warn you!");
-                boolean success = reset(newFile);
+                // THIS LINE HERE!!!!!VVV
+                BufferedImage bufferedImage = null;
+                try {
+                    InputStream in = new FileInputStream(newFile);
+                    bufferedImage = ImageIO.read(in);
+                } catch (IOException | NullPointerException | IllegalArgumentException exc) {
+                    System.out.println(defaultImage);
+                    exc.printStackTrace();
+                    showMessageDialog(frame, "Unable to read file input");
+                }
+                boolean success = reset(bufferedImage);
                 if (success) {
                     System.out.println("Custom picture success!");
                 } else {
