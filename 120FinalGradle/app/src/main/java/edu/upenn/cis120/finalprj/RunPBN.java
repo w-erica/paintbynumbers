@@ -115,7 +115,7 @@ public class RunPBN implements Runnable{
         // add mouselistener to canvas
         canvas.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 try {
                     done = pbnModel.color(e.getY()/ PixelComponent.SIDELENGTH, e.getX()/PixelComponent.SIDELENGTH);
                     canvas.repaint();
@@ -195,7 +195,7 @@ public class RunPBN implements Runnable{
             public void actionPerformed(ActionEvent e) {
                 String newFile = showInputDialog("Type your path to your new file \n" +
                         "It should be an absolute path. \n" +
-                        "Also don't make the picture really big. Don't say I didn't warn you!");
+                        "The picture should also not be too large. See help for more info!");
                 // THIS LINE HERE!!!!!VVV
                 BufferedImage bufferedImage = null;
                 try {
@@ -210,7 +210,10 @@ public class RunPBN implements Runnable{
                 if (success) {
                     System.out.println("Custom picture success!");
                 } else {
-                    showMessageDialog(frame, "Bad input :(");
+                    System.out.println("Unable to read custom picture");
+                    if (!newFile.isBlank()) {
+                        showMessageDialog(frame, "Bad input :(");
+                    }
                 }
             }
         });
